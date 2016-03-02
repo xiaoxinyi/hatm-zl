@@ -106,6 +106,7 @@ void CorpusUtils::ReadCorpus(
 
   corpus->setWordNo(word_no);
   cout << "Number of documents in corpus: " << doc_no << endl;
+  cout << "Number of authors in corpus: " << author_no << endl;
   cout << "Number of distinct words in corpus: " << word_no << endl;
   cout << "Number of words in corpus: " << total_word_count << endl;
 }
