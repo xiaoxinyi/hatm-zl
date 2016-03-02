@@ -6,9 +6,11 @@
 #include "utils.h"
 
 namespace hatm {
+
 // =======================================================================
 // Author
 // =======================================================================
+
 std::unordered_map<int, Author*> Author::id_to_author_;
 
 Author::Author() {	
@@ -17,7 +19,7 @@ Author::Author() {
 Author::Author(int id, int depth) 
 		: id_(id),
 		  depth_(depth) {
-	
+	initLevelCounts(depth);
 	id_to_author[id] = this;
 }
 

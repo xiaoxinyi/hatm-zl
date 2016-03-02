@@ -78,9 +78,8 @@ void DocumnetUtils::PermuteAuthors(Document* document) {
 	gsl_permutation_free(perm);
 }
 
-void DocumentUtils::SampleAuthorId(
+void DocumentUtils::SampleAuthors(
 			Document* document,
-			int permute_words,
 			bool remove) {
 	int size = documnet->getAuthors();
 	double log_pr = log(1.0 / size);
@@ -88,65 +87,17 @@ void DocumentUtils::SampleAuthorId(
 
 	for (int i = 0; i < document->getWords(); i++) {
 		Word* word = document->getMutableWord(i);
+
+		if (remove) {
+			Author* author = Author::GetMutableAuthor(word->getAuthorId());
+			author->removeWord(*word);
+		}
 		// Sample author id uniformly.
 		int author_id = Utils::SampleFromLogPr(log_pr_sample);
 		word->setAuthorId(author_id);
 
 		Author* author = Author::GetMutableAuthor(author_id);
 		author->addWord(*word);
-	}
-}
-
-void DocumentUtils::SampleLevels(
-			Document* document,
-      int permute_words,
-      bool remove,
-      double gem_mean,
-      double gem_scale) {
-	
-	int depth = author->getMutablePathTopic(0)->getMutableTree()->getDepth();
-	vector<double> log_pr(depth);
-
-	// Permute the words in the document.
-	if (permute_words == 1) {
-		PermuteWords(document);
-	}
-
-	for (int i = 0; i < document->getWords(); i++) {
-		Word* word = document->getMutableWord(i);
-		Author* author = Author::GetMutableAuthor(author_id);
-		if (remove) {
-			int level = word->getLevel();
-			// Update the word level.
-			author->updateLevelCounts(level, -1);
-			// Remove the word from author.
-			author->removeWord(*word);
-			// Decrease the word count.
-			author->getMutablePathTopic(level)->updateWordCount(word->getId(), -1);
-		}
-
-		// Compute probabilities.
-		// Compute log prbabilities for all levels.
-		// Use the corpus GEM mean and scale.
-		author->computeLogPrLevel(gem_mean, gem_scale, depth);
-
-		for (int j = 0; j < depth; j++) {
-			double log_pr_level = author_.getLogPrLevel(j);
-			double log_pr_word = 
-					author->getMutablePathTopic(j)->getLogPrWord(word->getId());
-
-			// Keep for each level the log probability of the word +
-      // log probability of the level.
-      // Use these values to sample the new level.
-      log_pr.at(j) = log_value;
-		}
-
-		// Sample the new level and update.
-    int new_level = Utils::SampleFromLogPr(log_pr);
-    author->getMutablePathTopic(new_level)->updateWordCount(word->getId(), 1);
-    word->setLevel(new_level);
-    author->updateLevelCounts(new_level, 1);
-    author->addWord(*word);
 	}
 }
 
