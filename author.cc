@@ -11,8 +11,6 @@ namespace hatm {
 // Author
 // =======================================================================
 
-std::unordered_map<int, Author*> Author::id_to_author_;
-
 Author::Author() {	
 }
 
@@ -73,13 +71,34 @@ void Author::computeLogPrLevel(double gem_mean,
 	log_pr_level_[depth - 1] = last_section;
 }
 
-Author* Author::GetMutableAuthor(int author_id) {
-	std::unordered_map<id, Author*>::iterator found = 
-			id_to_author_.find(author_id);
-	if (found == id_to_author_.end()) {
-		return NULL;
-	} else {
-		return id_to_author_[author_id];		
+
+
+// =======================================================================
+// AllAuthors
+// =======================================================================
+
+AllAuthors& AllAuthors::GetInstance() {
+	static AllAuthors instance;
+	return instance;
+}
+
+
+void AllAuthors::addAuthor(int id, int depth) {
+	Author* author = new Author(id, depth);
+	author_ptrs_.push_back(author);
+}
+
+void AllAuthors::addAuthor(const Author& from) {
+	Author* author = new Author(from);
+	author_ptrs_.push_back(author);
+}
+
+AllAuthors::~AllAuthors() {
+	int size = author_ptrs_.size();
+	for (int i = 0; i < size; i++) {
+		if (author_ptrs_[i] != NULL) {
+			delete author_ptrs_[i];
+		}
 	}
 }
 

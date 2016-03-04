@@ -48,12 +48,10 @@ public:
 	
 	void addWord(const Word& word) { words.push_back(word); }
 	void removeWord(const Word& word);
-	
+
 	Word* getMutableWord(int i) { return &words_.at(i); }
 	void setWord(int i, const Word& word) { words_.at(i) = word; }
 
-	// Get author correpond to author_id
-	static Author* GetMutableAuthor(int author_id);
 private:
 	// Author id;
 	int id_;
@@ -77,8 +75,52 @@ private:
 	// Author score.
 	double score_;
 
-	// Map id to author
-	static std::unordered_map<int, Author*> id_to_author_;
+};
+
+// AllAuthors contains all the authors in corpus.
+class AllAuthors {
+public:
+	static AllAuthors& GetInstance();
+
+	int getAuthors() const { return author_ptrs_.size(); }
+
+	Author* getMutableAuthor(int author_id) {
+		return author_ptrs_[author_id];
+	}
+
+	void addAuthor(int id, int depth);
+	void addAuthor(const Author& from);
+
+	~AllAuthors();
+private:
+	// All authors.
+	vector<Author*> author_ptrs_;
+
+	// Private constructor.
+	AllAuthors() {}
+	AllAuthors(const AllAuthors& from);
+	AllAuthors& operator=(const AllAuthors& from); 
+
+};
+
+// The class provides functionality for sampling levels 
+// for an given author.
+class AuthorUtils {
+public:
+	// Sample the word levels for a given author,
+  // for the current path assignments of the author.
+  // Sampling can be with (permute = 1) or without (permute != 1)
+  // permuting the words in the document.
+  // Words can or cannot be removed from levels in the tree (set/unset
+  // the bool remove variable).
+  // The GEM distribution mean and scale parameters determined at corpus
+  // level are provided as input.
+	static void SampleLevels(
+			Author* author,
+      int permute_words,
+      bool remove,
+      double gem_mean,
+      double gem_scale);
 };
 
 // This class provides functionality for sampling the
@@ -138,7 +180,7 @@ class AuthorTopicUtils {
       Topic* topic,
       int level,
       double eta,
-      int word_no);
+      int term_no);
 };
 
 }  // namespace hatm
