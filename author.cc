@@ -84,13 +84,21 @@ AllAuthors& AllAuthors::GetInstance() {
 
 
 void AllAuthors::addAuthor(int id, int depth) {
+	unordered_map<int, Author*>::iterator found = author_ptrs_.find(id);
+	if (found != author_ptrs_.end()) return;
+
 	Author* author = new Author(id, depth);
-	author_ptrs_.push_back(author);
+	author_ptrs_[id] = author;
 }
 
 void AllAuthors::addAuthor(const Author& from) {
+	int id = from.getId();
+
+	unordered_map<int, Author*>::iterator found = author_ptrs_.find(id);
+	if (found != author_ptrs_.end()) return;
+
 	Author* author = new Author(from);
-	author_ptrs_.push_back(author);
+	author_ptrs_[id] = author;
 }
 
 AllAuthors::~AllAuthors() {

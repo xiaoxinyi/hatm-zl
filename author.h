@@ -85,7 +85,11 @@ public:
 	int getAuthors() const { return author_ptrs_.size(); }
 
 	Author* getMutableAuthor(int author_id) {
-		return author_ptrs_[author_id];
+		if (author_ptrs_.find(author_id) != author_ptrs_.end()) {
+			return author_ptrs_[author_id];	
+		} else {
+			return NULL;
+		}	
 	}
 
 	void addAuthor(int id, int depth);
@@ -94,7 +98,7 @@ public:
 	~AllAuthors();
 private:
 	// All authors.
-	vector<Author*> author_ptrs_;
+	unordered_map<int, Author*> author_ptrs_;
 
 	// Private constructor.
 	AllAuthors() {}

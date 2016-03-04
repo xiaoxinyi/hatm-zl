@@ -84,20 +84,20 @@ void DocumentUtils::SampleAuthors(
 	int size = documnet->getAuthors();
 	double log_pr = log(1.0 / size);
 	std::vector<double> log_pr_sample(size, log_pr);
-	AllAuthors& all_authors = AllAuthors.GetInstance();
+	AllAuthors& all_authors = AllAuthors::GetInstance();
 
 	for (int i = 0; i < document->getWords(); i++) {
 		Word* word = document->getMutableWord(i);
 
 		if (remove) {
-			Author* author = all_authors.GetMutableAuthor(word->getAuthorId());
+			Author* author = all_authors.getMutableAuthor(word->getAuthorId());
 			author->removeWord(*word);
 		}
 		// Sample author id uniformly.
 		int author_id = Utils::SampleFromLogPr(log_pr_sample);
 		word->setAuthorId(author_id);
 
-		Author* author = all_authors.GetMutableAuthor(author_id);
+		Author* author = all_authors.getMutableAuthor(author_id);
 		author->addWord(*word);
 	}
 }

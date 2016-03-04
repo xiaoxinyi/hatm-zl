@@ -23,13 +23,15 @@ namespace hlda {
 Corpus::Corpus()
     : gem_mean_(0.0),
       gem_scale_(0.0),
-      word_no_(0) {
+      word_no_(0),
+      author_no_(0), {
 }
 
 Corpus::Corpus(double gem_mean, double gem_scale)
     : gem_mean_(gem_mean),
       gem_scale_(gem_scale),
-      word_no_(0) {
+      word_no_(0),
+      author_no_(0), {
 }
 
 
@@ -42,7 +44,6 @@ void CorpusUtils::ReadCorpus(
     const std::string& docs_filename,
     const std::string& authors_filename,
     Corpus* corpus,
-    int& author_no,
     int depth) {
 
   ifstream infile(docs_filename.c_str());
@@ -51,7 +52,7 @@ void CorpusUtils::ReadCorpus(
   ifstream authors_infile(authors_filename.c_str());
   char authors_buf[BUF_SIZE];
 
-  author_no = 0;
+  int author_no = 0;
   int doc_no = 0;
   int word_no = 0;
   int total_word_count = 0;
@@ -77,7 +78,8 @@ void CorpusUtils::ReadCorpus(
     istringstream s_line(buf);
     // Consider each line at a time.
     int word_count_pos = 0;
-    Document document(doc_no, depth);
+    Document document(doc_no);
+    // Set author ids
     document.setAuthorIds(author_ids);
     while (s_line.getline(buf, BUF_SIZE, ' ')) {
       if (word_count_pos == 0) {
@@ -104,7 +106,15 @@ void CorpusUtils::ReadCorpus(
 
   infile.close();
 
+  AllAuthors& all_authors = AllAuthors::GetInstance();
+  for (int i = 0; i < author_no; i++) {
+    all_authors.addAuthor(i, depth);
+  }
+
+  corpus->setAllAuthors(all_authors);
   corpus->setWordNo(word_no);
+  corpus->setAuthorNo(author_no);
+
   cout << "Number of documents in corpus: " << doc_no << endl;
   cout << "Number of authors in corpus: " << author_no << endl;
   cout << "Number of distinct words in corpus: " << word_no << endl;
@@ -115,26 +125,30 @@ double CorpusUtils::GemScore(
     Corpus* corpus) {
   double score = 0.0;
 
+  AllAuthors& all_authors = AllAuthors::getInstance();
+
   // Get depth of the tree.
   // Look at the topic in the topic path of the document.
   int depth =
-      corpus->getMutableDocument(0)->
+      all_authors.getMutableAuthor(0)->
       getMutablePathTopic(0)->getMutableTree()->getDepth();
 
   // GEM distribution priors.
   double prior_a = (1 - corpus->getGemMean()) * corpus->getGemScale();
   double prior_b = corpus->getGemMean() * corpus->getGemScale();
 
-  for (int i = 0; i < corpus->getDocuments(); i++) {
-    Document* document = corpus->getMutableDocument(i);
-    double document_score = 0.0;
+  for (int i = 0; i < corpus->getAuthorNo(); i++) {
+    Author* author = corpus->getMutableDocument(i);
+    assert(author != NULL);
+
+    double author_score = 0.0;
 
     // Get an aggregated level count composed of all the level counts
     // up to the current level.
     vector<double> agreg_level_count(depth);
     for (int j = 0; j < depth; j++) {
       agreg_level_count[j] = 0.0;
-      double count = document->getLevelCounts(j);
+      double count = author->getLevelCounts(j);
       for (int k = 0; k < j; k++) {
         agreg_level_count[k] += count;
       }
@@ -142,20 +156,20 @@ double CorpusUtils::GemScore(
     double sum_log_prob = 0.0;
 
     // Sum up all the level counts.
-    double sum_levels = document->getSumLevelCounts(depth);
+    double sum_levels = author->getSumLevelCounts(depth);
     double last_log_prob = 0.0;
     for (int j = 0; j < depth - 1; j++) {
-      double a = document->getLevelCounts(j) + prior_a;
+      double a = author->getLevelCounts(j) + prior_a;
       double b = agreg_level_count[j] + prior_b;
 
-      document_score += lgamma(a) + lgamma(b) - lgamma(a + b) -
+      author_score += lgamma(a) + lgamma(b) - lgamma(a + b) -
           lgamma(prior_b) - lgamma(prior_a) +
           lgamma(prior_a + prior_b);
 
-      sum_levels -= document->getLevelCounts(j);
+      sum_levels -= author->getLevelCounts(j);
 
-      double expected_stick_len = (prior_a + document->getLevelCounts(j)) /
-          (corpus->getGemScale() + document->getLevelCounts(j) + sum_levels);
+      double expected_stick_len = (prior_a + author->getLevelCounts(j)) /
+          (corpus->getGemScale() + author->getLevelCounts(j) + sum_levels);
 
       double log_prob = log(expected_stick_len) + sum_log_prob;
 
@@ -171,9 +185,9 @@ double CorpusUtils::GemScore(
     last_log_prob = log(1 - exp(last_log_prob));
 
     // The bottom levels are conditionally independent.
-    document_score += document->getLevelCounts(depth - 1) * last_log_prob;
-    score += document_score;
-    document->setScore(document_score);
+    author_score += author->getLevelCounts(depth - 1) * last_log_prob;
+    score += author_score;
+    author->setScore(author_score);
   }
 
   score += -corpus->getGemScale();

@@ -5,6 +5,7 @@
 #include <string>
 
 #include "document.h"
+#include "author.h"
 #include "utils.h"
 
 namespace hlda {
@@ -17,6 +18,10 @@ class Corpus {
   Corpus();
   Corpus(double gem_mean, double gem_scale);
 
+  void setAllAuthors(AllAuthors& all_authors) { all_authors_ = all_authors; }
+
+  void setAuthorNo(int author_no) { author_no_ = author_no; }
+  int getAuthorNo() const { return author_no_; }
 
   void setWordNo(int word_no) { word_no_ = word_no; }
   int getWordNo() const { return word_no_; }
@@ -50,6 +55,12 @@ class Corpus {
 
   // The documents in this corpus.
   vector<Document> documents_;
+
+  // The number of distinct authors in the corpus.
+  int author_no_;
+
+  // All authors in this corpus.
+  AllAuthors& all_authors_;
 };
 
 // This class provides functionality for reading a corpus from a file,
@@ -62,7 +73,6 @@ class CorpusUtils {
       const std::string& docs_filename,
       const std::string& authors_filename,
       Corpus* corpus,
-      int& author_no,
       int depth);
 
   // Corpus level GEM score.
