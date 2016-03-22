@@ -5,7 +5,7 @@
 
 #include "gibbs.h"
 
-#define REP_NO 100
+#define REP_NO 1
 #define DEFAULT_HYPER_LAG 0
 #define DEFAULT_SHUFFLE_LAG 100
 #define DEFAULT_LEVEL_LAG -1
