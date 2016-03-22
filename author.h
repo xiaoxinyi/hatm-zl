@@ -77,7 +77,7 @@ private:
 	vector<int> level_counts_;
 
 	// Log p(level) which is unnormalized.
-	std::vector<double> log_pr_level_;
+	vector<double> log_pr_level_;
 
 	// Author score.
 	double score_;

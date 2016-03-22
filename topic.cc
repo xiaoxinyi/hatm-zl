@@ -25,9 +25,9 @@ Topic::Topic(int level, Topic* parent, Tree* tree, int corpus_word_no)
   double eta = tree->getEta(level);
   double word_log_pr = log(eta) - log(eta * corpus_word_no);
 
-  log_pr_word_ = vector<double>(word_log_pr, corpus_word_no);
-  word_counts_ = vector<int>(0, corpus_word_no);
-  lgam_word_count_eta_ = vector<double>(0.0, corpus_word_no);
+  log_pr_word_ = vector<double>(corpus_word_no, word_log_pr);
+  word_counts_ = vector<int>(corpus_word_no, 0);
+  lgam_word_count_eta_ = vector<double>(corpus_word_no, 0.0);
 }
 
 Topic::Topic(const Topic& from, Topic* parent, Tree* tree)

@@ -18,8 +18,11 @@ Author::Author() {
 
 Author::Author(int id, int depth) 
 		: id_(id),
-		  depth_(depth) {
-	initLevelCounts(depth);
+		  path_(depth, nullptr),
+		  depth_(depth),
+		  level_counts_(depth, 0),
+		  log_pr_level_(depth, 0.0) {
+
 }
 
 void Author::removeWord(int word) {
@@ -91,6 +94,7 @@ AllAuthors& AllAuthors::GetInstance() {
 
 void AuthorUtils::PermuteWords(Author* author) {
   int size = author->getWords();
+	if (size == 0) return;
   vector<int> permuted_words;
 
   // Permute the values in perm.

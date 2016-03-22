@@ -68,7 +68,8 @@ void GibbsSampler::ReadGibbsInput(
 
   int depth, sample_eta, sample_gem;
   vector<double> eta;
-  double gem_mean, gem_scale, scaling_shape, scaling_scale;
+  double gem_mean = 0.0, gem_scale = 0.0,
+				 scaling_shape = 0.0, scaling_scale = 0.0;
 
   while (infile.getline(buf, BUF_SIZE)) {
     istringstream s_line(buf);
