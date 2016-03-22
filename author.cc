@@ -209,6 +209,38 @@ void AuthorTreeUtils::UpdateTreeFromAuthor(
 
 }
 
+void AuthorTreeUtils::SampleAuthorPath(Tree* tree,
+																       Author* author,
+																       bool remove,
+																       int start_level) {
+
+ // Remove the author from the path at the specified level (start_level).
+  if (remove) {
+    RemoveAuthorFromPath(tree, author, start_level);
+  }
+
+  double log_sum = 0.0;
+
+  // Path probabilities.
+  vector<double> path_pr(tree->getDepth(), 0.0);
+  Topic* start_topic = author->getMutablePathTopic(start_level);
+
+  // Compute path probabilities starting at the topic and
+  // visiting all its children depth-first.
+  AuthorTopicUtils::ProbabilitiesDfs(
+      start_topic, author, &log_sum,
+      &path_pr, start_level);
+
+  // Sample node and fill tree.
+  Topic* topic = TopicUtils::SampleTopic(
+      author->getMutablePathTopic(start_level), log_sum);
+  topic = TopicUtils::AddTopic(topic);
+
+  // Add path to the author, start at the specified start level.
+  AuthorTopicUtils::AddPathToAuthor(topic, author, start_level);
+}
+
+
 
 // =======================================================================
 // AuthorTopicUtils

@@ -20,11 +20,12 @@ AuthorTreeUtils	author.h	/^class AuthorTreeUtils {$/;"	c	namespace:hatm
 AuthorUtils	author.h	/^class AuthorUtils {$/;"	c	namespace:hatm
 BUF_SIZE	corpus.cc	/^#define BUF_SIZE /;"	d	file:
 BUF_SIZE	gibbs.cc	/^#define BUF_SIZE /;"	d	file:
+COMPILER	Makefile	/^COMPILER = g++$/;"	m
 CORPUS_H_	corpus.h	/^#define CORPUS_H_$/;"	d
-Corpus	corpus.cc	/^Corpus::Corpus()$/;"	f	class:hlda::Corpus
-Corpus	corpus.cc	/^Corpus::Corpus(double gem_mean, double gem_scale)$/;"	f	class:hlda::Corpus
-Corpus	corpus.h	/^class Corpus {$/;"	c	namespace:hlda
-CorpusUtils	corpus.h	/^class CorpusUtils {$/;"	c	namespace:hlda
+Corpus	corpus.cc	/^Corpus::Corpus()$/;"	f	class:hatm::Corpus
+Corpus	corpus.cc	/^Corpus::Corpus(double gem_mean, double gem_scale)$/;"	f	class:hatm::Corpus
+Corpus	corpus.h	/^class Corpus {$/;"	c	namespace:hatm
+CorpusUtils	corpus.h	/^class CorpusUtils {$/;"	c	namespace:hatm
 DEFAULT_HYPER_LAG	gibbs.cc	/^#define DEFAULT_HYPER_LAG /;"	d	file:
 DEFAULT_LEVEL_LAG	gibbs.cc	/^#define DEFAULT_LEVEL_LAG /;"	d	file:
 DEFAULT_SAMPLE_GAM	gibbs.cc	/^#define DEFAULT_SAMPLE_GAM /;"	d	file:
@@ -35,12 +36,13 @@ Document	document.h	/^class Document {$/;"	c	namespace:hatm
 DocumentUtils	document.h	/^class DocumentUtils {$/;"	c	namespace:hatm
 ETA_STDEV	tree.cc	/^#define ETA_STDEV /;"	d	file:
 EtaScore	topic.cc	/^double TopicUtils::EtaScore(Topic* topic) {$/;"	f	class:hatm::TopicUtils
+FLAGS	Makefile	/^FLAGS = -g -Wall  -I\/usr\/local\/Cellar\/gsl\/1.16\/include -std=c++11$/;"	m
 GAM_STDEV	tree.cc	/^#define GAM_STDEV /;"	d	file:
 GEM_MEAN_STDEV	corpus.cc	/^#define GEM_MEAN_STDEV /;"	d	file:
 GEM_STDEV	corpus.cc	/^#define GEM_STDEV /;"	d	file:
 GIBBS_H_	gibbs.h	/^#define GIBBS_H_$/;"	d
 GammaScore	topic.cc	/^double TopicUtils::GammaScore(Topic* topic) {$/;"	f	class:hatm::TopicUtils
-GemScore	corpus.cc	/^double CorpusUtils::GemScore($/;"	f	class:hlda::CorpusUtils
+GemScore	corpus.cc	/^double CorpusUtils::GemScore($/;"	f	class:hatm::CorpusUtils
 GetInstance	author.cc	/^AllAuthors& AllAuthors::GetInstance() {$/;"	f	class:hatm::AllAuthors
 GetInstance	document.cc	/^AllWords& AllWords::GetInstance() {$/;"	f	class:hatm::AllWords
 GibbsSampler	gibbs.h	/^class GibbsSampler {$/;"	c	namespace:hatm
@@ -50,10 +52,13 @@ InitGibbsState	gibbs.cc	/^void GibbsSampler::InitGibbsState($/;"	f	class:hatm::G
 InitGibbsStateRep	gibbs.cc	/^GibbsState* GibbsSampler::InitGibbsStateRep($/;"	f	class:hatm::GibbsSampler
 InitRandomNumberGen	utils.cc	/^void Utils::InitRandomNumberGen(long rng_seed) {$/;"	f	class:hatm::Utils
 IterateGibbsState	gibbs.cc	/^void GibbsSampler::IterateGibbsState(GibbsState* gibbs_state) {$/;"	f	class:hatm::GibbsSampler
+LIBS	Makefile	/^LIBS = -lgsl -lgslcblas -L\/usr\/local\/Cellar\/gsl\/1.16\/lib$/;"	m
 LogGammaRatio	author.cc	/^double AuthorTopicUtils::LogGammaRatio($/;"	f	class:hatm::AuthorTopicUtils
 LogSum	utils.cc	/^double Utils::LogSum(double log_a, double log_b) {$/;"	f	class:hatm::Utils
+MAX_ITERATIONS	hatm_main.cc	/^#define MAX_ITERATIONS /;"	d	file:
+OBJS	Makefile	/^OBJS = utils.o topic.o tree.o document.o corpus.o gibbs.o author.o hatm_main.o$/;"	m
 PermuteAuthors	document.cc	/^void DocumentUtils::PermuteAuthors(Document* document) {$/;"	f	class:hatm::DocumentUtils
-PermuteDocuments	corpus.cc	/^void CorpusUtils::PermuteDocuments(Corpus* corpus) {$/;"	f	class:hlda::CorpusUtils
+PermuteDocuments	corpus.cc	/^void CorpusUtils::PermuteDocuments(Corpus* corpus) {$/;"	f	class:hatm::CorpusUtils
 PermuteWords	author.cc	/^void AuthorUtils::PermuteWords(Author* author) {$/;"	f	class:hatm::AuthorUtils
 PermuteWords	document.cc	/^void DocumentUtils::PermuteWords(Document* document) {$/;"	f	class:hatm::DocumentUtils
 ProbabilitiesDfs	author.cc	/^void AuthorTopicUtils::ProbabilitiesDfs($/;"	f	class:hatm::AuthorTopicUtils
@@ -65,11 +70,12 @@ REP_NO_ETA	tree.cc	/^#define REP_NO_ETA /;"	d	file:
 REP_NO_GEM	corpus.cc	/^#define REP_NO_GEM /;"	d	file:
 RandGauss	utils.cc	/^double Utils::RandGauss(double mean, double stdev) {$/;"	f	class:hatm::Utils
 RandNo	utils.cc	/^double Utils::RandNo() {$/;"	f	class:hatm::Utils
-ReadCorpus	corpus.cc	/^void CorpusUtils::ReadCorpus($/;"	f	class:hlda::CorpusUtils
+ReadCorpus	corpus.cc	/^void CorpusUtils::ReadCorpus($/;"	f	class:hatm::CorpusUtils
 ReadGibbsInput	gibbs.cc	/^void GibbsSampler::ReadGibbsInput($/;"	f	class:hatm::GibbsSampler
 Remove	topic.cc	/^void TopicUtils::Remove(Topic* topic) {$/;"	f	class:hatm::TopicUtils
 RemoveAuthorFromPath	author.cc	/^void AuthorTreeUtils::RemoveAuthorFromPath($/;"	f	class:hatm::AuthorTreeUtils
-SampleAuthors	document.cc	/^void DocumentUtils::SampleAuthors(Document* document,$/;"	f	class:hatm::DocumentUtils
+SOURCE	Makefile	/^SOURCE = $(OBJS:.o=.cc)$/;"	m
+SampleAuthors	document.cc	/^void DocumentUtils::SampleAuthors(Document* document) {$/;"	f	class:hatm::DocumentUtils
 SampleDfs	topic.cc	/^Topic* TopicUtils::SampleDfs($/;"	f	class:hatm::TopicUtils
 SampleFromLogPr	utils.cc	/^int Utils::SampleFromLogPr(const vector<double>& log_pr) {$/;"	f	class:hatm::Utils
 SampleLevels	author.cc	/^void AuthorUtils::SampleLevels($/;"	f	class:hatm::AuthorUtils
@@ -90,8 +96,8 @@ TreeUtils	tree.h	/^class TreeUtils {$/;"	c	namespace:hatm
 UTILS_H_	utils.h	/^#define UTILS_H_$/;"	d
 UpdateAuthorFromWord	document.cc	/^void WordUtils::UpdateAuthorFromWord($/;"	f	class:hatm::WordUtils
 UpdateEta	tree.cc	/^void TreeUtils::UpdateEta(Tree* tree) {$/;"	f	class:hatm::TreeUtils
-UpdateGemMean	corpus.cc	/^void CorpusUtils::UpdateGemMean(Corpus* corpus) {$/;"	f	class:hlda::CorpusUtils
-UpdateGemScale	corpus.cc	/^void CorpusUtils::UpdateGemScale(Corpus* corpus) {$/;"	f	class:hlda::CorpusUtils
+UpdateGemMean	corpus.cc	/^void CorpusUtils::UpdateGemMean(Corpus* corpus) {$/;"	f	class:hatm::CorpusUtils
+UpdateGemScale	corpus.cc	/^void CorpusUtils::UpdateGemScale(Corpus* corpus) {$/;"	f	class:hatm::CorpusUtils
 UpdateTreeFromAuthor	author.cc	/^void AuthorTreeUtils::UpdateTreeFromAuthor($/;"	f	class:hatm::AuthorTreeUtils
 Utils	utils.h	/^class Utils {$/;"	c	namespace:hatm
 Word	document.cc	/^Word::Word(int id) $/;"	f	class:hatm::Word
@@ -101,14 +107,13 @@ WordUtils	document.h	/^class WordUtils {$/;"	c	namespace:hatm
 addAuthor	author.h	/^	void addAuthor(int id, int depth) { authors_.emplace_back(Author(id, depth)); }$/;"	f	class:hatm::AllAuthors
 addAuthorId	document.h	/^	void addAuthorId(const int author_id) { author_ids_.push_back(author_id); } $/;"	f	class:hatm::Document
 addChild	topic.h	/^  void addChild(Topic* child) { children_.push_back(child); }$/;"	f	class:hatm::Topic
-addDocument	corpus.h	/^  void addDocument(const Document& document) {$/;"	f	class:hlda::Corpus
+addDocument	corpus.h	/^  void addDocument(Document&& document) {$/;"	f	class:hatm::Corpus
 addWord	author.h	/^	void addWord(int word) { words_.push_back(word); }$/;"	f	class:hatm::Author
 addWord	document.h	/^	void addWord(int word) { words_.push_back(word); }$/;"	f	class:hatm::Document
 addWord	document.h	/^	void addWord(int word_id, int author_id = -1, int level_ = -1) {$/;"	f	class:hatm::AllWords
-all_authors_	corpus.h	/^  AllAuthors& all_authors_;$/;"	m	class:hlda::Corpus
 author_id_	document.h	/^	int author_id_;$/;"	m	class:hatm::Word
-author_ids_	document.h	/^	std::vector<int> author_ids_;$/;"	m	class:hatm::Document
-author_no_	corpus.h	/^  int author_no_;$/;"	m	class:hlda::Corpus
+author_ids_	document.h	/^	vector<int> author_ids_;$/;"	m	class:hatm::Document
+author_no_	corpus.h	/^  int author_no_;$/;"	m	class:hatm::Corpus
 author_no_	topic.h	/^	int author_no_;$/;"	m	class:hatm::Topic
 authors_	author.h	/^	vector<Author> authors_;$/;"	m	class:hatm::AllAuthors
 children_	topic.h	/^	vector<Topic*> children_;$/;"	m	class:hatm::Topic
@@ -118,34 +123,38 @@ corpus_	gibbs.h	/^  Corpus corpus_;$/;"	m	class:hatm::GibbsState
 corpus_word_no_	topic.h	/^	int corpus_word_no_;$/;"	m	class:hatm::Topic
 depth_	author.h	/^	int depth_;$/;"	m	class:hatm::Author
 depth_	tree.h	/^  int depth_;$/;"	m	class:hatm::Tree
-documents_	corpus.h	/^  vector<Document> documents_;$/;"	m	class:hlda::Corpus
+documents_	corpus.h	/^  vector<Document> documents_;$/;"	m	class:hatm::Corpus
 eta_	tree.h	/^  vector<double> eta_;$/;"	m	class:hatm::Tree
 eta_score_	gibbs.h	/^  double eta_score_;$/;"	m	class:hatm::GibbsState
 from	author.h	/^	AllAuthors& operator=(const AllAuthors& from) = delete;$/;"	m	class:hatm::AllAuthors
 from	author.h	/^	AllAuthors(const AllAuthors& from) = delete;$/;"	m	class:hatm::AllAuthors
 from	document.h	/^	AllWords& operator=(const AllWords& from) = delete;$/;"	m	class:hatm::AllWords
 from	document.h	/^	AllWords(const AllWords& from) = delete;$/;"	m	class:hatm::AllWords
+from	document.h	/^	Document& operator=(Document&& from) = default;$/;"	m	class:hatm::Document
+from	document.h	/^	Document& operator=(const Document& from) = default;$/;"	m	class:hatm::Document
+from	document.h	/^	Document(Document&& from) = default;$/;"	m	class:hatm::Document
+from	document.h	/^	Document(const Document& from) = default;$/;"	m	class:hatm::Document
 from	topic.h	/^  Topic& operator=(const Topic& from) = delete;$/;"	m	class:hatm::Topic
 from	topic.h	/^  Topic(const Topic& from) = delete;$/;"	m	class:hatm::Topic
 gamma_score_	gibbs.h	/^  double gamma_score_;$/;"	m	class:hatm::GibbsState
-gem_mean_	corpus.h	/^  double gem_mean_;$/;"	m	class:hlda::Corpus
-gem_scale_	corpus.h	/^  double gem_scale_;$/;"	m	class:hlda::Corpus
+gem_mean_	corpus.h	/^  double gem_mean_;$/;"	m	class:hatm::Corpus
+gem_scale_	corpus.h	/^  double gem_scale_;$/;"	m	class:hatm::Corpus
 gem_score_	gibbs.h	/^  double gem_score_;$/;"	m	class:hatm::GibbsState
 getAuthorId	document.h	/^	int getAuthorId() const { return author_id_; }$/;"	f	class:hatm::Word
 getAuthorId	document.h	/^	int getAuthorId(int i) const { return author_ids_.at(i); }$/;"	f	class:hatm::Document
-getAuthorNo	corpus.h	/^  int getAuthorNo() const { return author_no_; }$/;"	f	class:hlda::Corpus
+getAuthorNo	corpus.h	/^  int getAuthorNo() const { return author_no_; }$/;"	f	class:hatm::Corpus
 getAuthorNo	topic.h	/^  int getAuthorNo() const { return author_no_; }$/;"	f	class:hatm::Topic
 getAuthors	author.h	/^	int getAuthors() const { return authors_.size(); }$/;"	f	class:hatm::AllAuthors
 getAuthors	document.h	/^	int getAuthors() const { return author_ids_.size(); }$/;"	f	class:hatm::Document
 getChildren	topic.h	/^  int getChildren() const { return children_.size(); }$/;"	f	class:hatm::Topic
 getCorpusWordNo	topic.h	/^  int getCorpusWordNo() const { return corpus_word_no_; }$/;"	f	class:hatm::Topic
 getDepth	tree.h	/^  int getDepth() const { return depth_; }$/;"	f	class:hatm::Tree
-getDocuments	corpus.h	/^  int getDocuments() const { return documents_.size(); }$/;"	f	class:hlda::Corpus
+getDocuments	corpus.h	/^  int getDocuments() const { return documents_.size(); }$/;"	f	class:hatm::Corpus
 getEta	tree.h	/^  double getEta(int i) const { return eta_[i]; }$/;"	f	class:hatm::Tree
 getEtaScore	gibbs.h	/^  double getEtaScore() const { return eta_score_; }$/;"	f	class:hatm::GibbsState
 getGammaScore	gibbs.h	/^  double getGammaScore() const { return gamma_score_; }$/;"	f	class:hatm::GibbsState
-getGemMean	corpus.h	/^  double getGemMean() const { return gem_mean_; }$/;"	f	class:hlda::Corpus
-getGemScale	corpus.h	/^  double getGemScale() const { return gem_scale_; }$/;"	f	class:hlda::Corpus
+getGemMean	corpus.h	/^  double getGemMean() const { return gem_mean_; }$/;"	f	class:hatm::Corpus
+getGemScale	corpus.h	/^  double getGemScale() const { return gem_scale_; }$/;"	f	class:hatm::Corpus
 getGemScore	gibbs.h	/^  double getGemScore() const { return gem_score_; }$/;"	f	class:hatm::GibbsState
 getHyperLag	gibbs.h	/^  int getHyperLag() const { return hyper_lag_; }$/;"	f	class:hatm::GibbsState
 getId	author.h	/^	int getId() const { return id_; }$/;"	f	class:hatm::Author
@@ -162,7 +171,7 @@ getMaxScore	gibbs.h	/^  double getMaxScore() const { return max_score_; }$/;"	f	
 getMutableAuthor	author.h	/^	Author* getMutableAuthor(int author_id) { return &authors_[author_id]; }$/;"	f	class:hatm::AllAuthors
 getMutableChild	topic.h	/^  Topic* getMutableChild(int i) { return children_.at(i); }$/;"	f	class:hatm::Topic
 getMutableCorpus	gibbs.h	/^  Corpus* getMutableCorpus() { return &corpus_; }$/;"	f	class:hatm::GibbsState
-getMutableDocument	corpus.h	/^  Document* getMutableDocument(int i) { return &documents_.at(i); }$/;"	f	class:hlda::Corpus
+getMutableDocument	corpus.h	/^  Document* getMutableDocument(int i) { return &documents_.at(i); }$/;"	f	class:hatm::Corpus
 getMutableParent	topic.h	/^	Topic* getMutableParent() { return parent_; }$/;"	f	class:hatm::Topic
 getMutablePathTopic	author.h	/^	Topic* getMutablePathTopic(int level) { return path_[level]; }$/;"	f	class:hatm::Author
 getMutableRootTopic	tree.h	/^  Topic* getMutableRootTopic() { return root_topic_; }$/;"	f	class:hatm::Tree
@@ -186,12 +195,14 @@ getTree	topic.h	/^  const Tree& getTree() const { return *tree_; }$/;"	f	class:h
 getWord	author.h	/^	int getWord(int i) { return words_.at(i); }$/;"	f	class:hatm::Author
 getWord	document.h	/^	int getWord(int i) { return words_.at(i); }$/;"	f	class:hatm::Document
 getWordCount	topic.h	/^  int getWordCount(int word_id) const { return word_counts_[word_id]; }$/;"	f	class:hatm::Topic
-getWordNo	corpus.h	/^  int getWordNo() const { return word_no_; }$/;"	f	class:hlda::Corpus
+getWordNo	corpus.h	/^  int getWordNo() const { return word_no_; }$/;"	f	class:hatm::Corpus
 getWordNo	document.h	/^	int getWordNo() const { return word_no_; }$/;"	f	class:hatm::AllWords
 getWords	author.h	/^	int getWords() const { return words_.size(); }$/;"	f	class:hatm::Author
 getWords	document.h	/^	int getWords() const { return words_.size(); }$/;"	f	class:hatm::Document
 hatm	author.cc	/^namespace hatm {$/;"	n	file:
 hatm	author.h	/^namespace hatm {$/;"	n
+hatm	corpus.cc	/^namespace hatm {$/;"	n	file:
+hatm	corpus.h	/^namespace hatm {$/;"	n
 hatm	document.cc	/^namespace hatm {$/;"	n	file:
 hatm	document.h	/^namespace hatm {$/;"	n
 hatm	gibbs.cc	/^namespace hatm {$/;"	n	file:
@@ -202,8 +213,6 @@ hatm	tree.cc	/^namespace hatm {$/;"	n	file:
 hatm	tree.h	/^namespace hatm {$/;"	n
 hatm	utils.cc	/^namespace hatm {$/;"	n	file:
 hatm	utils.h	/^namespace hatm {$/;"	n
-hlda	corpus.cc	/^namespace hlda {$/;"	n	file:
-hlda	corpus.h	/^namespace hlda {$/;"	n
 hyper_lag_	gibbs.h	/^  int hyper_lag_;$/;"	m	class:hatm::GibbsState
 id_	author.h	/^	int id_;$/;"	m	class:hatm::Author
 id_	document.h	/^	int id_;$/;"	m	class:hatm::Document
@@ -221,6 +230,7 @@ level_lag_	gibbs.h	/^  int level_lag_;$/;"	m	class:hatm::GibbsState
 lgam_word_count_eta_	topic.h	/^	vector<double> lgam_word_count_eta_;$/;"	m	class:hatm::Topic
 log_pr_level_	author.h	/^	std::vector<double> log_pr_level_;$/;"	m	class:hatm::Author
 log_pr_word_	topic.h	/^	vector<double> log_pr_word_;$/;"	m	class:hatm::Topic
+main	hatm_main.cc	/^int main(int argc, char** argv) {$/;"	f
 max_score_	gibbs.h	/^  double max_score_;$/;"	m	class:hatm::GibbsState
 next_id_	tree.h	/^  int next_id_;$/;"	m	class:hatm::Tree
 operator =	tree.cc	/^Tree& Tree::operator =(const Tree& from) {$/;"	f	class:hatm::Tree
@@ -239,18 +249,17 @@ scaling_scale_	tree.h	/^  double scaling_scale_;$/;"	m	class:hatm::Tree
 scaling_shape_	tree.h	/^  double scaling_shape_;$/;"	m	class:hatm::Tree
 score_	author.h	/^	double score_;$/;"	m	class:hatm::Author
 score_	gibbs.h	/^  double score_;$/;"	m	class:hatm::GibbsState
-setAllAuthors	corpus.h	/^  void setAllAuthors(AllAuthors& all_authors) { all_authors_ = all_authors; }$/;"	f	class:hlda::Corpus
 setAuthorId	document.h	/^	void setAuthorId(int author_id) { author_id_ = author_id; }$/;"	f	class:hatm::Word
 setAuthorIds	document.h	/^	void setAuthorIds(const std::vector<int>& author_ids) { author_ids_ = author_ids; }$/;"	f	class:hatm::Document
-setAuthorNo	corpus.h	/^  void setAuthorNo(int author_no) { author_no_ = author_no; }$/;"	f	class:hlda::Corpus
+setAuthorNo	corpus.h	/^  void setAuthorNo(int author_no) { author_no_ = author_no; }$/;"	f	class:hatm::Corpus
 setChild	topic.h	/^  void setChild(int i, Topic* child) { children_.at(i) = child; }$/;"	f	class:hatm::Topic
 setCorpus	gibbs.h	/^  void setCorpus(const Corpus& corpus) { corpus_ = corpus; }$/;"	f	class:hatm::GibbsState
-setDocuments	corpus.h	/^  void setDocuments(const vector<Document>& documents) {$/;"	f	class:hlda::Corpus
+setDocuments	corpus.h	/^  void setDocuments(vector<Document>&& documents) {$/;"	f	class:hatm::Corpus
 setEta	tree.h	/^  void setEta(int i, double value) { eta_[i] = value; }$/;"	f	class:hatm::Tree
 setEtaScore	gibbs.h	/^  void setEtaScore(double eta_score) { eta_score_ = eta_score; }$/;"	f	class:hatm::GibbsState
 setGammaScore	gibbs.h	/^  void setGammaScore(double gamma_score) { gamma_score_ = gamma_score; }$/;"	f	class:hatm::GibbsState
-setGemMean	corpus.h	/^  void setGemMean(double gem_mean) { gem_mean_ = gem_mean; }$/;"	f	class:hlda::Corpus
-setGemScale	corpus.h	/^  void setGemScale(double gem_scale) { gem_scale_ = gem_scale; }$/;"	f	class:hlda::Corpus
+setGemMean	corpus.h	/^  void setGemMean(double gem_mean) { gem_mean_ = gem_mean; }$/;"	f	class:hatm::Corpus
+setGemScale	corpus.h	/^  void setGemScale(double gem_scale) { gem_scale_ = gem_scale; }$/;"	f	class:hatm::Corpus
 setGemScore	gibbs.h	/^  void setGemScore(double gem_score) { gem_score_ = gem_score; }$/;"	f	class:hatm::GibbsState
 setId	document.h	/^	void setId(int id) { id_ = id; }$/;"	f	class:hatm::Word
 setIteration	gibbs.h	/^  void setIteration(int iteration) { iteration_ = iteration; }$/;"	f	class:hatm::GibbsState
@@ -266,7 +275,7 @@ setScore	author.h	/^	void setScore(double score) { score_ = score; }$/;"	f	class
 setScore	gibbs.h	/^  void setScore(double score) { score_ = score; }$/;"	f	class:hatm::GibbsState
 setTree	gibbs.h	/^  void setTree(const Tree& tree) { tree_ = tree; }$/;"	f	class:hatm::GibbsState
 setWord	author.h	/^	void setWord(int i, const int& word) { words_.at(i) = word; }$/;"	f	class:hatm::Author
-setWordNo	corpus.h	/^  void setWordNo(int word_no) { word_no_ = word_no; }$/;"	f	class:hlda::Corpus
+setWordNo	corpus.h	/^  void setWordNo(int word_no) { word_no_ = word_no; }$/;"	f	class:hatm::Corpus
 setWordNo	document.h	/^	void setWordNo(const int& word_no) { word_no_ = word_no; }$/;"	f	class:hatm::AllWords
 setWords	author.h	/^	void setWords(vector<int>&& words) { words_ = move(words); }$/;"	f	class:hatm::Author
 setWords	document.h	/^	void setWords(vector<int>&& words) { words_ = move(words); }$/;"	f	class:hatm::Document
@@ -279,7 +288,7 @@ updateLevelCounts	author.h	/^	void updateLevelCounts(int level, int value) {$/;"
 updateWordCount	topic.cc	/^void Topic::updateWordCount(int word_id, int update) {$/;"	f	class:hatm::Topic
 updateWordNo	document.h	/^	void updateWordNo(int update) { word_no_ += update; }$/;"	f	class:hatm::AllWords
 word_counts_	topic.h	/^	vector<int> word_counts_;$/;"	m	class:hatm::Topic
-word_no_	corpus.h	/^  int word_no_;$/;"	m	class:hlda::Corpus
+word_no_	corpus.h	/^  int word_no_;$/;"	m	class:hatm::Corpus
 word_no_	document.h	/^	int word_no_;$/;"	m	class:hatm::AllWords
 words_	author.h	/^	vector<int> words_;$/;"	m	class:hatm::Author
 words_	document.h	/^	vector<Word> words_;$/;"	m	class:hatm::AllWords
