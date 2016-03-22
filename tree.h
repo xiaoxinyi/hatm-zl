@@ -6,7 +6,7 @@
 #include "topic.h"
 #include "utils.h"
 
-namespace hlda {
+namespace hatm {
 
 class Topic;
 
@@ -71,6 +71,6 @@ class TreeUtils {
   static void UpdateEta(Tree* tree);
 };
 
-}  // namespace hlda
+}  // namespace hatm
 
 #endif  // TREE_H_

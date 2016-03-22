@@ -1,9 +1,11 @@
 #include <assert.h>
 #include <math.h>
 #include <algorithm>
+#include <gsl/gsl_sf.h>
 
-#include "document.h"
 #include "utils.h"
+#include "author.h"
+#include "topic.h"
 
 namespace hatm {
 
@@ -18,21 +20,20 @@ Author::Author(int id, int depth)
 		: id_(id),
 		  depth_(depth) {
 	initLevelCounts(depth);
-	id_to_author[id] = this;
 }
 
-void Author::removeWord(const Word& word) {
-	auto found = find(begin(words), end(words), word);
-	if (found == end(words)) {
+void Author::removeWord(int word) {
+	auto found = find(begin(words_), end(words_), word);
+	if (found == end(words_)) {
 
 	} else {
-		words.erase(found);
+		words_.erase(found);
 	}
 }
 
 void Author::initLevelCounts(int depth) {
-	level_counts_ = std::vector<int>(depth, 0);
-	log_pr_level_ = std::vector<double>(depth, 0.0);
+	level_counts_ = vector<int>(depth, 0);
+	log_pr_level_ = vector<double>(depth, 0.0);
 }
 
 int Author::getSumLevelCounts(int depth) const {
@@ -83,32 +84,6 @@ AllAuthors& AllAuthors::GetInstance() {
 }
 
 
-void AllAuthors::addAuthor(int id, int depth) {
-	unordered_map<int, Author*>::iterator found = author_ptrs_.find(id);
-	if (found != author_ptrs_.end()) return;
-
-	Author* author = new Author(id, depth);
-	author_ptrs_[id] = author;
-}
-
-void AllAuthors::addAuthor(const Author& from) {
-	int id = from.getId();
-
-	unordered_map<int, Author*>::iterator found = author_ptrs_.find(id);
-	if (found != author_ptrs_.end()) return;
-
-	Author* author = new Author(from);
-	author_ptrs_[id] = author;
-}
-
-AllAuthors::~AllAuthors() {
-	int size = author_ptrs_.size();
-	for (int i = 0; i < size; i++) {
-		if (author_ptrs_[i] != NULL) {
-			delete author_ptrs_[i];
-		}
-	}
-}
 
 // =======================================================================
 // AuthorUtils
@@ -116,7 +91,7 @@ AllAuthors::~AllAuthors() {
 
 void AuthorUtils::PermuteWords(Author* author) {
   int size = author->getWords();
-  vector<Word> permuted_words;
+  vector<int> permuted_words;
 
   // Permute the values in perm.
   // These values correspond to the indices of the words in the
@@ -127,13 +102,15 @@ void AuthorUtils::PermuteWords(Author* author) {
   assert(size == perm_size);
 
   for (int i = 0; i < perm_size; i++) {
-    permuted_words.push_back(*author->getMutableWord(perm->data[i]));
+    permuted_words.push_back(author->getWord(perm->data[i]));
   }
 
-  author->setWords(permuted_words);
+  author->setWords(move(permuted_words));
 
   gsl_permutation_free(perm);
 }
+
+
 
 void AuthorUtils::SampleLevels(
 			Author* author,
@@ -149,16 +126,21 @@ void AuthorUtils::SampleLevels(
 		PermuteWords(author);
 	}
 
-	for (int i = 0; i < Author->getWords(); i++) {
-		Word* word = Author->getMutableWord(i);
-		
+	AllWords& all_words = AllWords::GetInstance();
+
+	for (int i = 0; i < author->getWords(); i++) {
+		int word_idx = author->getWord(i);
+		Word* word = all_words.getMutableWord(word_idx);
+
 		if (remove) {
 			int level = word->getLevel();
-			// Update the word level.
-			author->updateLevelCounts(level, -1);
+			if (level != -1) {
+				// Update the word level.
+				author->updateLevelCounts(level, -1);
 			
-			// Decrease the word count.
-			author->getMutablePathTopic(level)->updateWordCount(word->getId(), -1);
+				// Decrease the word count.
+				author->getMutablePathTopic(level)->updateWordCount(word->getId(), -1);
+			}
 		}
 
 		// Compute probabilities.
@@ -167,10 +149,11 @@ void AuthorUtils::SampleLevels(
 		author->computeLogPrLevel(gem_mean, gem_scale, depth);
 
 		for (int j = 0; j < depth; j++) {
-			double log_pr_level = author_.getLogPrLevel(j);
+			double log_pr_level = author->getLogPrLevel(j);
 			double log_pr_word = 
 					author->getMutablePathTopic(j)->getLogPrWord(word->getId());
 
+			double log_value = log_pr_level + log_pr_word;
 			// Keep for each level the log probability of the word +
       // log probability of the level.
       // Use these values to sample the new level.
@@ -205,20 +188,23 @@ void AuthorTreeUtils::UpdateTreeFromAuthor(
 	// The depth of the tree.
 	int depth = author->getMutablePathTopic(0)->getMutableTree()->getDepth();
 
+	AllWords& all_words = AllWords::GetInstance();
 
-	// Update the word count for all the words in the docuennt.
+	// Update the word count of the topic for all the words in the author.
 	for (int i = 0; i < author->getWords(); i++) {
-		Word* word = author->getMutableWord(i);
+		int word_idx = author->getWord(i);
+		Word* word = all_words.getMutableWord(word_idx);
+		int level = word->getLevel();
 		if (level > start_level) {
-			author->getMutablePathTopic(level)->updateWordCount(
-					word->getId(), update);
+			Topic* topic = author->getMutablePathTopic(level);
+			topic->updateWordCount(word->getId(), update);
 		}
 	}
 
 	// Update the author count for the topic in the path.
 	for (int i = start_level + 1; i < depth; i++) {
 		Topic* topic = author->getMutablePathTopic(i);
-		topic->incDocumentNo(update);
+		topic->incAuthorNo(update);
 	}
 
 }
@@ -228,9 +214,9 @@ void AuthorTreeUtils::UpdateTreeFromAuthor(
 // AuthorTopicUtils
 // =======================================================================
 
-void AuthorTopicUtils::AddPathToDocument(
+void AuthorTopicUtils::AddPathToAuthor(
       Topic* topic,
-      Author* Author,
+      Author* author,
       int start_level) {
 	int depth = topic->getMutableTree()->getDepth();
   int level = depth - 1;
@@ -249,7 +235,7 @@ void AuthorTopicUtils::AddPathToDocument(
 
 void AuthorTopicUtils::ProbabilitiesDfs(
       Topic* topic,
-      Author* Author,	
+      Author* author,	
       double* log_sum,
       vector<double>* path_pr,
       int start_level) {
@@ -303,16 +289,18 @@ void AuthorTopicUtils::ProbabilitiesDfs(
 }
 
 double AuthorTopicUtils::LogGammaRatio(
-      Author* Author,
+      Author* author,
       Topic* topic,
       int level,
       double eta,
       int term_no) {
 	std::vector<int> count(term_no, 0);
+	AllWords& all_words = AllWords::GetInstance();
 
 	for (int i = 0; i < author->getWords(); i++) {
-		Word* word = author->getMutableWord(i);
-		if (word->getlevel() == level) {
+		int word_idx = author->getWord(i);
+		Word* word = all_words.getMutableWord(word_idx);
+		if (word->getLevel() == level) {
 			count[word->getId()]++;
 		}
 	}
@@ -325,13 +313,14 @@ double AuthorTopicUtils::LogGammaRatio(
     word_no = topic->getTopicWordNo();
   }
 
-  double value = word_no + term_no * eta;
-  result = gsl_sf_lngamma(value); 
-  value = word_no + author->getlevelCounts(level) + term_no * eta; 
+
+  double result = gsl_sf_lngamma(word_no + term_no * eta); 
+  double value = word_no + author->getLevelCounts(level) + term_no * eta; 
   result -= gsl_sf_lngamma(value);
 
   for (int i = 0; i < author->getWords(); i++) {
-  	int word_id = author->getMutableWord(i)->getId();
+  	int word_idx = author->getWord(i);
+  	int word_id = all_words.getMutableWord(word_idx)->getId();
     if (count[word_id] > 0) {
       int word_count = 0;
       if (topic != NULL) {

@@ -21,6 +21,8 @@ class Tree;
 class Topic {
 public:
 	Topic(int level, Topic* parent, Tree* tree, int corpus_word_no);
+  Topic(const Topic& from) = delete;
+  Topic& operator=(const Topic& from) = delete;
 	~Topic();
 	
 	Topic(const Topic& from, Topic* parent, Tree* tree);
@@ -42,7 +44,7 @@ public:
   void setParent(Topic* parent) { parent_ = parent; }
 
   void incAuthorNo(int val) { author_no_ += val; }
-  int getAuthorNod() const { return author_no_; }
+  int getAuthorNo() const { return author_no_; }
 
   int getWordCount(int word_id) const { return word_counts_[word_id]; }
 
@@ -77,7 +79,7 @@ private:
 
 	// Precomputed lngamma(word_count + eta), 
 	// where Eta is topic Dirichlet parameter.
-	vecotr<double> lgam_word_count_eta_;
+	vector<double> lgam_word_count_eta_;
 
 	// Total number of authors;
 	int author_no_;
@@ -103,9 +105,6 @@ private:
 	// Probability used to sample a path.
 	double probability_;
 
-	// No copy and assign.
-	Topic(const Topic& from);
-	void operator=(const Topic& from);
 };
 
 // This class provides functionality for calculating Eta and Gamma scores,

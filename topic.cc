@@ -57,11 +57,6 @@ Topic::~Topic() {
   }
 }
 
-Topic::Topic(const Topic& from) {
-}
-
-void Topic::operator =(const Topic& from) {
-}
 
 void Topic::updateWordCount(int word_id, int update) {
   // Find the word counts for the word with word_id, and update the counts.

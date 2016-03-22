@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "author.h"
+using namespace std;
 
 namespace hatm {
 
@@ -12,11 +12,14 @@ namespace hatm {
 // and the level in the tree the word is assigned to.
 class Word {
 public:
-	Word(int id, int count, int author_id, int level);
+	Word(int id, int author_id, int level);
+	Word(int id);
+
+	bool operator==(const Word& word);
 
 	void setLevel(int level) { level = level_; }
 	int getLevel() const { return level_; }
-	void updateLevel(int value) const { level_ += value; }
+	void updateLevel(int value) { level_ += value; }
 
 	void setId(int id) { id_ = id; }
 	int getId() const { return id_; }
@@ -24,19 +27,9 @@ public:
 	void setAuthorId(int author_id) { author_id_ = author_id; }
 	int getAuthorId() const { return author_id_; }
 
-	bool operator==(const Word& word) {
-		return (word.id_ == id_) &&
-					 (word.count_ == count_) &&
-					 (word.author_id_ == author_id) &&
-					 (word.level_ == level_);
-	}
-
 private:
 	// Word id.
 	int id_;
-
-	// Word count in the document.
-	int count_;
 
 	// Author id the word is assigned to.
 	int author_id_;
@@ -45,17 +38,54 @@ private:
 	int level_;
 };
 
+class WordUtils {
+public:
+	static void UpdateAuthorFromWord(
+			int word,
+			int update);
+};
+
+// AllWords contains all the words in the corpus,
+// each word has unique index in the corpus.
+class AllWords {
+public:
+	static AllWords& GetInstance();
+public:
+	AllWords(const AllWords& from) = delete;
+	AllWords& operator=(const AllWords& from) = delete;
+
+	int getWordNo() const { return word_no_; }
+	void setWordNo(const int& word_no) { word_no_ = word_no; }
+	void updateWordNo(int update) { word_no_ += update; }
+
+	void addWord(int word_id, int author_id = -1, int level_ = -1) {
+		words_.emplace_back(Word(word_id, author_id, level_));
+		++word_no_;
+	}
+
+	Word* getMutableWord(int i) { return &words_[i]; }
+
+private:
+	// Number of words.
+	int word_no_;
+
+	// All the words.
+	vector<Word> words_;
+
+	AllWords() {}
+};
+
 // The document containing a number of words and authors.
 // A document has an id.
 class Document {
 public:
-	Documnet(int id);
-	int getWodds() const { return words_.size(); }
+	Document(int id);
+	int getWords() const { return words_.size(); }
 	int getAuthors() const { return author_ids_.size(); }
 
-	void addWord(int word_id, int word_count, int author_id, int level);
-	Word* getMutableWord(int i) { return &words_.at(i); }
-	void setWord(int i, const Word& word) { words_.at(i) = word; }
+	void addWord(int word) { words_.push_back(word); }
+	int getWord(int i) { return words_.at(i); }
+	void setWords(vector<int>&& words) { words_ = move(words); }
 
 	int getAuthorId(int i) const { return author_ids_.at(i); }
 	void addAuthorId(const int author_id) { author_ids_.push_back(author_id); } 
@@ -66,7 +96,7 @@ private:
 	int id_;
 
 	// The words in the documnet
-	std::vector<word> words_;
+	vector<int> words_;
 
 	// Author ids of the document.
 	std::vector<int> author_ids_;
@@ -83,22 +113,10 @@ public:
 	static void PermuteAuthors(Document* document);
 
 	// Sample author id
-	static void SampleAuthorId(Document* document);
+	static void SampleAuthors(Document* document, bool remove);
 
-	// Sample the word levels for a given author,
-  // for the current path assignments of the author.
-  // Sampling can be with (permute = 1) or without (permute != 1)
-  // permuting the words in the document.
-  // Words can or cannot be removed from levels in the tree (set/unset
-  // the bool remove variable).
-  // The GEM distribution mean and scale parameters determined at corpus
-  // level are provided as input.
-	static void SampleLevels(
-			Document* document,
-      int permute_words,
-      bool remove,
-      double gem_mean,
-      double gem_scale)
 };
 
 }  // namespace hatm
+
+#endif

@@ -23,7 +23,7 @@
 
 using namespace std;
 
-namespace hlda {
+namespace hatm {
 
 // This class provides functionality for summing values,
 // for reading data from files and also provides
@@ -66,6 +66,6 @@ class Utils {
   static gsl_rng* RANDNUMGEN;
 };
 
-}  // namespace hlda
+}  // namespace hatm
 
 #endif  // UTILS_H_

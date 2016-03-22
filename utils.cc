@@ -22,7 +22,7 @@
 
 #include "utils.h"
 
-namespace hlda {
+namespace hatm {
 
 // =======================================================================
 // Utils
@@ -95,6 +95,6 @@ double Utils::RandNo() {
   return gsl_rng_uniform(RANDNUMGEN);
 }
 
-}  // namespace hlda
+}  // namespace hatm
 
 

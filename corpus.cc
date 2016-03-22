@@ -189,7 +189,7 @@ double CorpusUtils::GemScore(
     score += author_score;
     author->setScore(author_score);
   }
-
+  // ???
   score += -corpus->getGemScale();
   return score;
 }

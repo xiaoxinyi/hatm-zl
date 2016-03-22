@@ -5,9 +5,16 @@
 #include <string>
 #include <unordered_map>
 
-#include "topic.h"
+
+#include "document.h"
+
+
 
 namespace hatm {
+
+
+class Topic;
+class Tree;
 
 // An author has an id, a author score, a topic path
 // from the root of the tree to the leaf and
@@ -27,7 +34,7 @@ public:
 	// (level_counts__ and log_pr_level_) to 0.
 	void initLevelCounts(int depth);
 
-	int getLevelCounts(int level) const { return level_counts_.at(i); }
+	int getLevelCounts(int level) const { return level_counts_.at(level); }
 	int getSumLevelCounts(int depth) const;
 	void updateLevelCounts(int level, int value) {
 		level_counts_.at(level) += value;
@@ -44,13 +51,13 @@ public:
 	double getLogPrLevel(int depth) const { return log_pr_level_[depth]; }
 	void computeLogPrLevel(double gem_mean, double gem_scale, int depth);
 
-	int getWodds() const { return words_.size(); }
-	
-	void addWord(const Word& word) { words.push_back(word); }
-	void removeWord(const Word& word);
+	int getWords() const { return words_.size(); }
+	void setWords(vector<int>&& words) { words_ = move(words); }
 
-	Word* getMutableWord(int i) { return &words_.at(i); }
-	void setWord(int i, const Word& word) { words_.at(i) = word; }
+	int getWord(int i) { return words_.at(i); }
+	void setWord(int i, const int& word) { words_.at(i) = word; }
+	void addWord(int word) { words_.push_back(word); }
+	void removeWord(int word);
 
 private:
 	// Author id;
@@ -62,12 +69,12 @@ private:
 	// Depth of the tree.
 	int depth_;
 
-	std::vector<word> words;
+	vector<int> words_;
 	// Word counts.
 	// std::vector<int> word_counts_;
 
 	// Level counts.
-	std::vector<int> level_counts_;
+	vector<int> level_counts_;
 
 	// Log p(level) which is unnormalized.
 	std::vector<double> log_pr_level_;
@@ -77,35 +84,6 @@ private:
 
 };
 
-// AllAuthors contains all the authors in corpus.
-class AllAuthors {
-public:
-	static AllAuthors& GetInstance();
-
-	int getAuthors() const { return author_ptrs_.size(); }
-
-	Author* getMutableAuthor(int author_id) {
-		if (author_ptrs_.find(author_id) != author_ptrs_.end()) {
-			return author_ptrs_[author_id];	
-		} else {
-			return NULL;
-		}	
-	}
-
-	void addAuthor(int id, int depth);
-	void addAuthor(const Author& from);
-
-	~AllAuthors();
-private:
-	// All authors.
-	unordered_map<int, Author*> author_ptrs_;
-
-	// Private constructor.
-	AllAuthors() {}
-	AllAuthors(const AllAuthors& from);
-	AllAuthors& operator=(const AllAuthors& from); 
-
-};
 
 // The class provides functionality for sampling levels 
 // for an given author.
@@ -125,6 +103,8 @@ public:
       bool remove,
       double gem_mean,
       double gem_scale);
+
+	static void PermuteWords(Author* author);
 };
 
 // This class provides functionality for sampling the
@@ -163,7 +143,7 @@ public:
 class AuthorTopicUtils {
  public:
   // Fill in the topic path for this document.
-  static void AddPathToDocument(
+  static void AddPathToAuthor(
       Topic* topic,
       Author* Author,
       int start_level);
@@ -185,6 +165,30 @@ class AuthorTopicUtils {
       int level,
       double eta,
       int term_no);
+};
+
+// AllAuthors contains all the authors in corpus.
+class AllAuthors {
+
+public:
+	static AllAuthors& GetInstance();
+
+public:
+	AllAuthors(const AllAuthors& from) = delete;
+	AllAuthors& operator=(const AllAuthors& from) = delete;
+
+	int getAuthors() const { return authors_.size(); }
+
+	Author* getMutableAuthor(int author_id) { return &authors_[author_id]; }
+
+	void addAuthor(int id, int depth) { authors_.emplace_back(Author(id, depth)); }
+
+private:
+	// All authors.
+	vector<Author> authors_;
+
+	// Private constructor.
+	AllAuthors() {}
 };
 
 }  // namespace hatm
