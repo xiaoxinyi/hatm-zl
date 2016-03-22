@@ -8,13 +8,15 @@
 #include <sstream>
 
 #include "corpus.h"
+#include "topic.h"
+#include "author.h"
 
 #define REP_NO_GEM 100
 #define GEM_STDEV 0.05
 #define GEM_MEAN_STDEV 0.05
 #define BUF_SIZE 10000
 
-namespace hlda {
+namespace hatm {
 
 // =======================================================================
 // Corpus
@@ -24,14 +26,14 @@ Corpus::Corpus()
     : gem_mean_(0.0),
       gem_scale_(0.0),
       word_no_(0),
-      author_no_(0), {
+      author_no_(0) {
 }
 
 Corpus::Corpus(double gem_mean, double gem_scale)
     : gem_mean_(gem_mean),
       gem_scale_(gem_scale),
       word_no_(0),
-      author_no_(0), {
+      author_no_(0) {
 }
 
 
@@ -57,6 +59,8 @@ void CorpusUtils::ReadCorpus(
   int word_no = 0;
   int total_word_count = 0;
   int words;
+
+  AllWords& all_words = AllWords::GetInstance();
 
   while (infile.getline(buf, BUF_SIZE) && 
   			 authors_infile.getline(authors_buf, BUF_SIZE)) {
@@ -87,45 +91,51 @@ void CorpusUtils::ReadCorpus(
       } else {
         int word_id, word_count;
         istringstream s_word_count(buf);
-        std::string str;
+        string str;
         getline(s_word_count, str, ':');
         word_id = atoi(str.c_str());
         getline(s_word_count, str, ':');
         word_count = atoi(str.c_str());
         total_word_count += word_count;
-        document.addWord(word_id, word_count, -1, -1);
+       
+        for (int i = 0; i < word_count; i++) {
+          all_words.addWord(word_id);
+          document.addWord(all_words.getWordNo() - 1);
+        }
+       
         if (word_id >= word_no) {
           word_no = word_id + 1;
         }
       }
       word_count_pos++;
     }
-    corpus->addDocument(document);
+    corpus->addDocument(move(document));
     doc_no += 1;
   }
 
   infile.close();
+  authors_infile.close();
 
   AllAuthors& all_authors = AllAuthors::GetInstance();
   for (int i = 0; i < author_no; i++) {
     all_authors.addAuthor(i, depth);
   }
 
-  corpus->setAllAuthors(all_authors);
   corpus->setWordNo(word_no);
   corpus->setAuthorNo(author_no);
 
   cout << "Number of documents in corpus: " << doc_no << endl;
   cout << "Number of authors in corpus: " << author_no << endl;
   cout << "Number of distinct words in corpus: " << word_no << endl;
-  cout << "Number of words in corpus: " << total_word_count << endl;
+  cout << "Number of words in corpus: " << total_word_count << " = " 
+       << all_words.getWordNo() << endl;
 }
 
 double CorpusUtils::GemScore(
     Corpus* corpus) {
   double score = 0.0;
 
-  AllAuthors& all_authors = AllAuthors::getInstance();
+  AllAuthors& all_authors = AllAuthors::GetInstance();
 
   // Get depth of the tree.
   // Look at the topic in the topic path of the document.
@@ -137,8 +147,8 @@ double CorpusUtils::GemScore(
   double prior_a = (1 - corpus->getGemMean()) * corpus->getGemScale();
   double prior_b = corpus->getGemMean() * corpus->getGemScale();
 
-  for (int i = 0; i < corpus->getAuthorNo(); i++) {
-    Author* author = corpus->getMutableDocument(i);
+  for (int i = 0; i < all_authors.getAuthors(); i++) {
+    Author* author = all_authors.getMutableAuthor(i);
     assert(author != NULL);
 
     double author_score = 0.0;
@@ -263,10 +273,11 @@ void CorpusUtils::PermuteDocuments(Corpus* corpus) {
   assert(size == perm_size);
 
   for (int i = 0; i < perm_size; i++) {
-    permuted_documents.push_back(*corpus->getMutableDocument(perm->data[i]));
+    Document* document = corpus->getMutableDocument(perm->data[i]);
+    permuted_documents.emplace_back(move(*document));
   }
 
-  corpus->setDocuments(permuted_documents);
+  corpus->setDocuments(move(permuted_documents));
 
   gsl_permutation_free(perm);
 }

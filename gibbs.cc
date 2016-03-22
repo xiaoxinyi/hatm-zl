@@ -6,7 +6,7 @@
 #include "gibbs.h"
 
 #define REP_NO 100
-#define DEFAULT_HYPER_LAG 1
+#define DEFAULT_HYPER_LAG 0
 #define DEFAULT_SHUFFLE_LAG 100
 #define DEFAULT_LEVEL_LAG -1
 #define DEFAULT_SAMPLE_GAM 0
@@ -121,48 +121,55 @@ void GibbsSampler::InitGibbsState(
   Tree* tree = gibbs_state->getMutableTree();
   int depth = tree->getDepth();
 
-  // Permute documents in the corpus.
+  // Permute Authors in the corpus.
   CorpusUtils::PermuteDocuments(corpus);
 
   for (int i = 0; i < corpus->getDocuments(); i++) {
     Document* document = corpus->getMutableDocument(i);
+    DocumentUtils::SampleAuthors(document);
+  }
+
+  AllAuthors& all_authors = AllAuthors::GetInstance();
+
+  for (int i = 0; i < all_authors.getAuthors(); i++) {
+    Author* author = all_authors.getMutableAuthor(i);
 
     // Initialize the level counts to 0.
-    document->initLevelCounts(depth);
+    author->initLevelCounts(depth);
 
-    // Permute the words in the current document.
-    DocumentUtils::PermuteWords(document);
+    // Permute the words in the current author.
+    AuthorUtils::PermuteWords(author);
 
     // Add a topic to the root topic of the tree.
     Topic* topic = TopicUtils::AddTopic(tree->getMutableRootTopic());
 
-    // Increase the document count of the topic.
-    topic->incDocumentNo(1);
+    // Increase the author count of the topic.
+    topic->incAuthorNo(1);
 
     // Set this topic on the path at level depth - 1.
-    document->setPathTopic(depth - 1, topic);
+    author->setPathTopic(depth - 1, topic);
     for (int j = depth - 2; j >= 0; j--) {
-      Topic* parent = document->getMutablePathTopic(j+1)->getMutableParent();
-      parent->incDocumentNo(1);
-      document->setPathTopic(j, parent);
+      Topic* parent = author->getMutablePathTopic(j+1)->getMutableParent();
+      parent->incAuthorNo(1);
+      author->setPathTopic(j, parent);
     }
 
-    // Sample levels for this document, without permuting the words
-    // in the document and without removing words from levels.
-    DocumentUtils::SampleLevels(document,
+    // Sample levels for this author, without permuting the words
+    // in the author and without removing words from levels.
+    AuthorUtils::SampleLevels(author,
                                 0,
                                 false,
                                 corpus->getGemMean(),
                                 corpus->getGemScale());
 
-    // Sample the document path starting at level 0 and removing words from
+    // Sample the author path starting at level 0 and removing words from
     // levels.
     if (i > 0) {
-      DocumentTreeUtils::SampleDocumentPath(tree, document, true, 0);
+      AuthorTreeUtils::SampleAuthorPath(tree, author, true, 0);
     }
 
-    // Sample levels for this document, and permute the words in the document.
-    DocumentUtils::SampleLevels(document,
+    // Sample levels for this author, and permute the words in the author.
+    AuthorUtils::SampleLevels(author,
                                 0,
                                 true,
                                 corpus->getGemMean(),
@@ -172,11 +179,12 @@ void GibbsSampler::InitGibbsState(
   // Compute the Gibbs score.
   double gibbs_score = gibbs_state->computeGibbsScore();
 
-  cout << "Gibbs score = " << gibbs_score << endl;%
+  cout << "Gibbs score = " << gibbs_score << endl;
 }
 
 GibbsState* GibbsSampler::InitGibbsStateRep(
     const std::string& filename_corpus,
+    const string& filename_authors,
     const std::string& filename_settings,
     long random_seed) {
   double best_score = 0.0;
@@ -187,7 +195,7 @@ GibbsState* GibbsSampler::InitGibbsStateRep(
     Utils::InitRandomNumberGen(random_seed);
 
     GibbsState* gibbs_state = new GibbsState();
-    ReadGibbsInput(gibbs_state, filename_corpus, filename_settings);
+    ReadGibbsInput(gibbs_state, filename_corpus, filename_authors, filename_settings);
 
     // Initialize the Gibbs state.
     InitGibbsState(gibbs_state);
@@ -242,18 +250,26 @@ void GibbsSampler::IterateGibbsState(GibbsState* gibbs_state) {
     CorpusUtils::PermuteDocuments(corpus);
   }
 
-  // Sample document path and word levels.
   for (int i = 0; i < corpus->getDocuments(); i++) {
     Document* document = corpus->getMutableDocument(i);
-    DocumentTreeUtils::SampleDocumentPath(
-        tree, document, true, sampling_level);
+    DocumentUtils::SampleAuthors(document);
   }
-  for (int i = 0; i < corpus->getDocuments(); i++) {
-    DocumentUtils::SampleLevels(corpus->getMutableDocument(i),
-                                permute,
-                                true,
-                                corpus->getGemMean(),
-                                corpus->getGemScale());
+
+  AllAuthors& all_authors = AllAuthors::GetInstance();
+
+  // Sample author path and word levels.
+  for (int i = 0; i < all_authors.getAuthors(); i++) {
+    Author* author = all_authors.getMutableAuthor(i);
+    AuthorTreeUtils::SampleAuthorPath(
+        tree, author, true, sampling_level);
+  }
+  for (int i = 0; i < all_authors.getAuthors(); i++) {
+    Author* author = all_authors.getMutableAuthor(i);
+    AuthorUtils::SampleLevels(author,
+                              permute,
+                              true,
+                              corpus->getGemMean(),
+                              corpus->getGemScale());
   }
 
   // Sample hyper-parameters.

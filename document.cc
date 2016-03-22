@@ -70,6 +70,7 @@ void WordUtils::UpdateAuthorFromWord(
 
 	if (update == 1) {
 		author->addWord(word);
+		word_ptr->setLevel(-1);
 	}
 }
 
@@ -138,25 +139,24 @@ void DocumentUtils::PermuteAuthors(Document* document) {
 	gsl_permutation_free(perm);
 }
 
-void DocumentUtils::SampleAuthors(Document* document,
-																  bool remove) {
+void DocumentUtils::SampleAuthors(Document* document) {
 	int authors = document->getAuthors();
 	std::vector<double> log_pr(authors, log(1.0 / authors));
-	AllAuthors& all_authors = AllAuthors::GetInstance();
+	
+	AllWords& all_words = AllWords::GetInstance();
 
 	for (int i = 0; i < document->getWords(); i++) {
-		Word* word = document->getMutableWord(i);
+		int word_idx = document->getWord(i);
+		Word* word = all_words.getMutableWord(word_idx);
 
-		if (remove) {
-			Author* author = all_authors.getMutableAuthor(word->getAuthorId());
-			author->removeWord(*word);
-		}
+
 		// Sample author id uniformly.
 		int author_id = Utils::SampleFromLogPr(log_pr);
-		word->setAuthorId(author_id);
-
-		Author* author = all_authors.getMutableAuthor(author_id);
-		author->addWord(*word);
+		if (author_id != word->getAuthorId()) {
+			WordUtils::UpdateAuthorFromWord(word_idx, -1);
+			word->setAuthorId(author_id);
+			WordUtils::UpdateAuthorFromWord(word_idx, 1);	
+		}
 	}
 }
 

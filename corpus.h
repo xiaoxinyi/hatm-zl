@@ -8,7 +8,7 @@
 #include "author.h"
 #include "utils.h"
 
-namespace hlda {
+namespace hatm {
 
 // A corpus containing a number of documents.
 // The parameters of the GEM distribution: gem_mean_ and
@@ -18,21 +18,19 @@ class Corpus {
   Corpus();
   Corpus(double gem_mean, double gem_scale);
 
-  void setAllAuthors(AllAuthors& all_authors) { all_authors_ = all_authors; }
-
   void setAuthorNo(int author_no) { author_no_ = author_no; }
   int getAuthorNo() const { return author_no_; }
 
   void setWordNo(int word_no) { word_no_ = word_no; }
   int getWordNo() const { return word_no_; }
 
-  void addDocument(const Document& document) {
-    documents_.push_back(document);
+  void addDocument(Document&& document) {
+    documents_.emplace_back(move(document));
   }
   int getDocuments() const { return documents_.size(); }
   Document* getMutableDocument(int i) { return &documents_.at(i); }
-  void setDocuments(const vector<Document>& documents) {
-    documents_ = documents;
+  void setDocuments(vector<Document>&& documents) {
+    documents_ = move(documents);
   }
 
   double getGemMean() const { return gem_mean_; }
@@ -58,9 +56,6 @@ class Corpus {
 
   // The number of distinct authors in the corpus.
   int author_no_;
-
-  // All authors in this corpus.
-  AllAuthors& all_authors_;
 };
 
 // This class provides functionality for reading a corpus from a file,
@@ -93,6 +88,6 @@ class CorpusUtils {
   static void PermuteDocuments(Corpus* corpus);
 };
 
-}  // namespace hlda
+}  // namespace hatm
 
 #endif  // CORPUS_H_

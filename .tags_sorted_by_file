@@ -3,7 +3,7 @@
 !_TAG_PROGRAM_VERSION	5.8	//
 !_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
-AddPathToDocument	author.cc	/^void AuthorTopicUtils::AddPathToDocument($/;"	f	class:hatm::AuthorTopicUtils
+AddPathToAuthor	author.cc	/^void AuthorTopicUtils::AddPathToAuthor($/;"	f	class:hatm::AuthorTopicUtils
 Author	author.cc	/^Author::Author() {	$/;"	f	class:hatm::Author
 Author	author.cc	/^Author::Author(int id, int depth) $/;"	f	class:hatm::Author
 GetInstance	author.cc	/^AllAuthors& AllAuthors::GetInstance() {$/;"	f	class:hatm::AllAuthors
@@ -12,7 +12,6 @@ PermuteWords	author.cc	/^void AuthorUtils::PermuteWords(Author* author) {$/;"	f	
 ProbabilitiesDfs	author.cc	/^void AuthorTopicUtils::ProbabilitiesDfs($/;"	f	class:hatm::AuthorTopicUtils
 RemoveAuthorFromPath	author.cc	/^void AuthorTreeUtils::RemoveAuthorFromPath($/;"	f	class:hatm::AuthorTreeUtils
 SampleLevels	author.cc	/^void AuthorUtils::SampleLevels($/;"	f	class:hatm::AuthorUtils
-UpdateAuthorFromWord	author.cc	/^void AuthorUtils::UpdateAuthorFromWord($/;"	f	class:hatm::AuthorUtils
 UpdateTreeFromAuthor	author.cc	/^void AuthorTreeUtils::UpdateTreeFromAuthor($/;"	f	class:hatm::AuthorTreeUtils
 computeLogPrLevel	author.cc	/^void Author::computeLogPrLevel(double gem_mean, $/;"	f	class:hatm::Author
 getSumLevelCounts	author.cc	/^int Author::getSumLevelCounts(int depth) const {$/;"	f	class:hatm::Author
@@ -39,19 +38,20 @@ getLogPrLevel	author.h	/^	double getLogPrLevel(int depth) const { return log_pr_
 getMutableAuthor	author.h	/^	Author* getMutableAuthor(int author_id) { return &authors_[author_id]; }$/;"	f	class:hatm::AllAuthors
 getMutablePathTopic	author.h	/^	Topic* getMutablePathTopic(int level) { return path_[level]; }$/;"	f	class:hatm::Author
 getScore	author.h	/^	double getScore() const { return score_; }$/;"	f	class:hatm::Author
-getWodds	author.h	/^	int getWodds() const { return words_.size(); }$/;"	f	class:hatm::Author
 getWord	author.h	/^	int getWord(int i) { return words_.at(i); }$/;"	f	class:hatm::Author
+getWords	author.h	/^	int getWords() const { return words_.size(); }$/;"	f	class:hatm::Author
 hatm	author.h	/^namespace hatm {$/;"	n
 id_	author.h	/^	int id_;$/;"	m	class:hatm::Author
-level_counts_	author.h	/^	std::vector<int> level_counts_;$/;"	m	class:hatm::Author
+level_counts_	author.h	/^	vector<int> level_counts_;$/;"	m	class:hatm::Author
 log_pr_level_	author.h	/^	std::vector<double> log_pr_level_;$/;"	m	class:hatm::Author
 path_	author.h	/^	std::vector<Topic*> path_;$/;"	m	class:hatm::Author
 score_	author.h	/^	double score_;$/;"	m	class:hatm::Author
 setPathTopic	author.h	/^	void setPathTopic(int level, Topic* topic) {$/;"	f	class:hatm::Author
 setScore	author.h	/^	void setScore(double score) { score_ = score; }$/;"	f	class:hatm::Author
 setWord	author.h	/^	void setWord(int i, const int& word) { words_.at(i) = word; }$/;"	f	class:hatm::Author
+setWords	author.h	/^	void setWords(vector<int>&& words) { words_ = move(words); }$/;"	f	class:hatm::Author
 updateLevelCounts	author.h	/^	void updateLevelCounts(int level, int value) {$/;"	f	class:hatm::Author
-words_	author.h	/^	std::vector<int> words_;$/;"	m	class:hatm::Author
+words_	author.h	/^	vector<int> words_;$/;"	m	class:hatm::Author
 BUF_SIZE	corpus.cc	/^#define BUF_SIZE /;"	d	file:
 Corpus	corpus.cc	/^Corpus::Corpus()$/;"	f	class:hlda::Corpus
 Corpus	corpus.cc	/^Corpus::Corpus(double gem_mean, double gem_scale)$/;"	f	class:hlda::Corpus
@@ -92,6 +92,7 @@ GetInstance	document.cc	/^AllWords& AllWords::GetInstance() {$/;"	f	class:hatm::
 PermuteAuthors	document.cc	/^void DocumentUtils::PermuteAuthors(Document* document) {$/;"	f	class:hatm::DocumentUtils
 PermuteWords	document.cc	/^void DocumentUtils::PermuteWords(Document* document) {$/;"	f	class:hatm::DocumentUtils
 SampleAuthors	document.cc	/^void DocumentUtils::SampleAuthors(Document* document,$/;"	f	class:hatm::DocumentUtils
+UpdateAuthorFromWord	document.cc	/^void WordUtils::UpdateAuthorFromWord($/;"	f	class:hatm::WordUtils
 Word	document.cc	/^Word::Word(int id) $/;"	f	class:hatm::Word
 Word	document.cc	/^Word::Word(int id, int author_id, int level)$/;"	f	class:hatm::Word
 hatm	document.cc	/^namespace hatm {$/;"	n	file:
@@ -102,6 +103,7 @@ DOCUMENT_H_	document.h	/^#define DOCUMENT_H_$/;"	d
 Document	document.h	/^class Document {$/;"	c	namespace:hatm
 DocumentUtils	document.h	/^class DocumentUtils {$/;"	c	namespace:hatm
 Word	document.h	/^class Word {$/;"	c	namespace:hatm
+WordUtils	document.h	/^class WordUtils {$/;"	c	namespace:hatm
 addAuthorId	document.h	/^	void addAuthorId(const int author_id) { author_ids_.push_back(author_id); } $/;"	f	class:hatm::Document
 addWord	document.h	/^	void addWord(int word) { words_.push_back(word); }$/;"	f	class:hatm::Document
 addWord	document.h	/^	void addWord(int word_id, int author_id = -1, int level_ = -1) {$/;"	f	class:hatm::AllWords
@@ -114,6 +116,7 @@ getAuthorId	document.h	/^	int getAuthorId(int i) const { return author_ids_.at(i
 getAuthors	document.h	/^	int getAuthors() const { return author_ids_.size(); }$/;"	f	class:hatm::Document
 getId	document.h	/^	int getId() const { return id_; }$/;"	f	class:hatm::Word
 getLevel	document.h	/^	int getLevel() const { return level_; }$/;"	f	class:hatm::Word
+getMutableWord	document.h	/^	Word* getMutableWord(int i) { return &words_[i]; }$/;"	f	class:hatm::AllWords
 getWord	document.h	/^	int getWord(int i) { return words_.at(i); }$/;"	f	class:hatm::Document
 getWordNo	document.h	/^	int getWordNo() const { return word_no_; }$/;"	f	class:hatm::AllWords
 getWords	document.h	/^	int getWords() const { return words_.size(); }$/;"	f	class:hatm::Document
@@ -197,11 +200,9 @@ Prune	topic.cc	/^void TopicUtils::Prune(Topic* topic) {$/;"	f	class:hatm::TopicU
 Remove	topic.cc	/^void TopicUtils::Remove(Topic* topic) {$/;"	f	class:hatm::TopicUtils
 SampleDfs	topic.cc	/^Topic* TopicUtils::SampleDfs($/;"	f	class:hatm::TopicUtils
 SampleTopic	topic.cc	/^Topic* TopicUtils::SampleTopic(Topic* root, double log_sum) {$/;"	f	class:hatm::TopicUtils
-Topic	topic.cc	/^Topic::Topic(const Topic& from) {$/;"	f	class:hatm::Topic
 Topic	topic.cc	/^Topic::Topic(const Topic& from, Topic* parent, Tree* tree)$/;"	f	class:hatm::Topic
 Topic	topic.cc	/^Topic::Topic(int level, Topic* parent, Tree* tree, int corpus_word_no)$/;"	f	class:hatm::Topic
 hatm	topic.cc	/^namespace hatm {$/;"	n	file:
-operator =	topic.cc	/^void Topic::operator =(const Topic& from) {$/;"	f	class:hatm::Topic
 updateWordCount	topic.cc	/^void Topic::updateWordCount(int word_id, int update) {$/;"	f	class:hatm::Topic
 ~Topic	topic.cc	/^Topic::~Topic() {$/;"	f	class:hatm::Topic
 TOPIC_H_	topic.h	/^#define TOPIC_H_$/;"	d
@@ -211,7 +212,9 @@ addChild	topic.h	/^  void addChild(Topic* child) { children_.push_back(child); }
 author_no_	topic.h	/^	int author_no_;$/;"	m	class:hatm::Topic
 children_	topic.h	/^	vector<Topic*> children_;$/;"	m	class:hatm::Topic
 corpus_word_no_	topic.h	/^	int corpus_word_no_;$/;"	m	class:hatm::Topic
-getAuthorNod	topic.h	/^  int getAuthorNod() const { return author_no_; }$/;"	f	class:hatm::Topic
+from	topic.h	/^  Topic& operator=(const Topic& from) = delete;$/;"	m	class:hatm::Topic
+from	topic.h	/^  Topic(const Topic& from) = delete;$/;"	m	class:hatm::Topic
+getAuthorNo	topic.h	/^  int getAuthorNo() const { return author_no_; }$/;"	f	class:hatm::Topic
 getChildren	topic.h	/^  int getChildren() const { return children_.size(); }$/;"	f	class:hatm::Topic
 getCorpusWordNo	topic.h	/^  int getCorpusWordNo() const { return corpus_word_no_; }$/;"	f	class:hatm::Topic
 getLevel	topic.h	/^  int getLevel() const { return level_; }$/;"	f	class:hatm::Topic
@@ -229,7 +232,7 @@ hatm	topic.h	/^namespace hatm {$/;"	n
 id_	topic.h	/^	int id_;$/;"	m	class:hatm::Topic
 incAuthorNo	topic.h	/^  void incAuthorNo(int val) { author_no_ += val; }$/;"	f	class:hatm::Topic
 level_	topic.h	/^	int level_;$/;"	m	class:hatm::Topic
-lgam_word_count_eta_	topic.h	/^	vecotr<double> lgam_word_count_eta_;$/;"	m	class:hatm::Topic
+lgam_word_count_eta_	topic.h	/^	vector<double> lgam_word_count_eta_;$/;"	m	class:hatm::Topic
 log_pr_word_	topic.h	/^	vector<double> log_pr_word_;$/;"	m	class:hatm::Topic
 parent_	topic.h	/^	Topic* parent_;$/;"	m	class:hatm::Topic
 probability_	topic.h	/^	double probability_;$/;"	m	class:hatm::Topic

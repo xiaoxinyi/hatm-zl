@@ -80,6 +80,12 @@ private:
 class Document {
 public:
 	Document(int id);
+	Document(const Document& from) = default;
+	Document& operator=(const Document& from) = default;
+
+	Document(Document&& from) = default;
+	Document& operator=(Document&& from) = default;
+
 	int getWords() const { return words_.size(); }
 	int getAuthors() const { return author_ids_.size(); }
 
@@ -99,7 +105,7 @@ private:
 	vector<int> words_;
 
 	// Author ids of the document.
-	std::vector<int> author_ids_;
+	vector<int> author_ids_;
 };
 
 // The class provides functionality for permuting words
@@ -113,7 +119,7 @@ public:
 	static void PermuteAuthors(Document* document);
 
 	// Sample author id
-	static void SampleAuthors(Document* document, bool remove);
+	static void SampleAuthors(Document* document);
 
 };
 

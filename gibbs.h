@@ -1,29 +1,15 @@
-// Copyright 2012 Google Inc. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//   http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-
 #ifndef GIBBS_H_
 #define GIBBS_H_
 
 #include <string>
 
-#include "corpus.h"
 #include "topic.h"
 #include "tree.h"
 #include "utils.h"
+#include "corpus.h"
 
 namespace hatm {
+
 
 // The Gibbs state of the HLDA implementation.
 // Each Gibbs state has a corpus and a tree, and
@@ -130,6 +116,7 @@ class GibbsSampler {
   // rng_seed is the random number generator seed.
   static GibbsState* InitGibbsStateRep(
       const std::string& filename_corpus,
+      const std::string& filename_authors,
       const std::string& filename_settings,
       long rng_seed);
 
